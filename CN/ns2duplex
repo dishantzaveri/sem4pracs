@@ -1,0 +1,46 @@
+//ns2duplex
+
+
+#Create a simulator object
+set ns [new Simulator]
+
+#Open the NS trace ﬁle
+set traceﬁle [open out.tr w]
+$ns trace-all $traceﬁle
+
+#Open the NAM trace ﬁle
+set namﬁle [open out.nam w]
+$ns namtrace-all $namﬁle
+
+#Create 2 nodeset set n0 [$ns node] set n1 [$ns node]
+
+#Create links between 2 nodeset
+$ns duplex-link $n0 $n1 100.0Mb 10ms DropTail
+$ns queue-limit $n0 $n1 50
+
+#Setup a TCP connection
+set tcp0 [new Agent/TCP]
+$ns attach-agent $n0 $tcp0 set sink [new Agent/TCPSink]
+$ns attach-agent $n1 $sink
+$tcp0 set packet-size 1500
+
+#Setup FTP connection over TCP
+set ftp0 [new Application/FTP]
+$tcp0 attach-agent $tcp0
+$ns at 1.0 "$ftp0 start"
+$ns at 2.0 "$ftp0 start"
+ 
+
+
+proc ﬁnish {} {
+
+global ns traceﬁle namﬁle
+
+$ns ﬂush-trace close $traceﬁle close $namﬁle
+exec nam out.nam & exit 0
+}
+
+$ns at $val(stop) "$ns nam-end-wireless $val(stop)"
+$ns at 5.0 "ﬁnish"
+$ns at $val(stop)"put \"done\"; $ns halt"
+$ns run

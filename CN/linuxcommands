@@ -1,0 +1,28 @@
+//linuxcommands
+
+ifconfig/ipconfig
+
+ip address
+
+ping google.com
+
+tracert google.com
+
+tracepath
+
+netstat
+netstat -s
+netstat -r
+
+nslookup google.com
+
+dig google.com
+
+arp
+
+arp -n
+
+route
+
+host google.com
+
